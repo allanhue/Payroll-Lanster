@@ -95,6 +95,7 @@ button:hover {
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(8px);
   overflow: hidden;
+  grid-template-rows: auto 1fr auto;
 }
 
 .brand {
@@ -158,9 +159,19 @@ button:hover {
 
 .sidebar-scroll {
   min-height: 0;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 0.2rem;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #d4dee9;
+  border-radius: 999px;
 }
 
 .sidebar-link {
@@ -295,6 +306,58 @@ button:hover {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.analytics-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chart-svg {
+  width: 100%;
+  height: 170px;
+}
+
+.line-chart {
+  stroke: #0e6489;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.line-dot {
+  fill: #0e6489;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.bar-chart {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #edf2f7;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #0e6489;
+}
+
 .navbar {
   position: fixed;
   top: 0;
@@ -354,6 +417,119 @@ button:hover {
   right: 0.35rem;
 }
 
+.notif-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(380px, 90vw);
+  height: 100vh;
+  background: #fff;
+  border-left: 1px solid #d8e0eb;
+  z-index: 50;
+  padding: 1rem;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.8rem;
+}
+
+.notif-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(9, 20, 35, 0.28);
+}
+
+.notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notif-header h3 {
+  margin: 0;
+}
+
+.drawer-close {
+  border: 1px solid #d5dee8;
+  background: #fff;
+  color: #27415a;
+  border-radius: 999px;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.notif-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  overflow: auto;
+}
+
+.notif-item {
+  border: 1px solid #dce5ef;
+  border-radius: 10px;
+  padding: 0.7rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.notif-item p {
+  margin: 0;
+  color: #3d4f67;
+  font-size: 0.9rem;
+}
+
+.notif-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notif-tag {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+}
+
+.tag-payrun {
+  background: #ebf6ff;
+  color: #0e6489;
+}
+
+.tag-payslip {
+  background: #eef8f2;
+  color: #2a6a3f;
+}
+
+.tag-approval {
+  background: #fff5e8;
+  color: #875f1f;
+}
+
+.tag-system {
+  background: #eff2f4;
+  color: #40556a;
+}
+
+.notif-remove {
+  border: 0;
+  background: transparent;
+  color: #65788f;
+  padding: 0 0.2rem;
+  border-radius: 6px;
+}
+
 .card,
 .panel {
   border: 1px solid var(--line);
@@ -376,6 +552,20 @@ button:hover {
 .form-grid {
   display: grid;
   gap: 0.8rem;
+}
+
+.form-two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-two-col > button {
+  width: fit-content;
+  margin-top: 1.6rem;
+}
+
+.form-two-col > div {
+  display: grid;
+  gap: 0.35rem;
 }
 
 .form-grid label {
@@ -546,5 +736,21 @@ button:hover {
 
   .simple-list li {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bar-row {
+    grid-template-columns: 90px 1fr auto;
+  }
+
+  .form-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .form-two-col > button {
+    margin-top: 0;
   }
 }

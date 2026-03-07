@@ -12,6 +12,7 @@ import (
 
 func main() {
   initDBOnly := flag.Bool("init-db", false, "initialize database tables and exit")
+  seedDemo := flag.Bool("seed-demo", false, "seed demo data into database and exit")
   flag.Parse()
 
   db, err := connectDatabase()
@@ -28,6 +29,18 @@ func main() {
       return
     }
     log.Println("database schema initialized successfully")
+    return
+  }
+
+  if *seedDemo {
+    if db == nil {
+      log.Println("database not configured. Set NEON_DATABASE_URL then run: go run . -seed-demo")
+      return
+    }
+    if err := SeedDemoData(db); err != nil {
+      log.Fatal("seed demo:", err)
+    }
+    log.Println("demo data seeded successfully")
     return
   }
 

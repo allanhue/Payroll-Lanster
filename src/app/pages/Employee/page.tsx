@@ -86,27 +86,44 @@ export default function EmployeePage() {
 
         <article className="panel">
           <h2>Add Employee</h2>
-          <form className="form-grid" onSubmit={onAdd}>
-            <input onChange={(e) => setFullName(e.target.value)} placeholder="Full name" required value={fullName} />
-            <input onChange={(e) => setEmail(e.target.value)} placeholder="Email" required type="email" value={email} />
-            <input
-              onChange={(e) => setDepartment(e.target.value)}
-              placeholder="Department"
-              required
-              value={department}
-            />
-            <input
-              min={1}
-              onChange={(e) => setSalary(e.target.value)}
-              placeholder="Annual salary"
-              required
-              type="number"
-              value={salary}
-            />
-            <select onChange={(e) => setPayCycle(e.target.value as "monthly" | "biweekly")} value={payCycle}>
-              <option value="monthly">Monthly</option>
-              <option value="biweekly">Biweekly</option>
-            </select>
+          <form className="form-grid form-two-col" onSubmit={onAdd}>
+            <div>
+              <label htmlFor="employeeName">Full name</label>
+              <input id="employeeName" onChange={(e) => setFullName(e.target.value)} placeholder="Full name" required value={fullName} />
+            </div>
+            <div>
+              <label htmlFor="employeeEmail">Email</label>
+              <input id="employeeEmail" onChange={(e) => setEmail(e.target.value)} placeholder="Email" required type="email" value={email} />
+            </div>
+            <div>
+              <label htmlFor="employeeDepartment">Department</label>
+              <input
+                id="employeeDepartment"
+                onChange={(e) => setDepartment(e.target.value)}
+                placeholder="Department"
+                required
+                value={department}
+              />
+            </div>
+            <div>
+              <label htmlFor="employeeSalary">Annual salary</label>
+              <input
+                id="employeeSalary"
+                min={1}
+                onChange={(e) => setSalary(e.target.value)}
+                placeholder="Annual salary"
+                required
+                type="number"
+                value={salary}
+              />
+            </div>
+            <div>
+              <label htmlFor="employeeCycle">Pay cycle</label>
+              <select id="employeeCycle" onChange={(e) => setPayCycle(e.target.value as "monthly" | "biweekly")} value={payCycle}>
+                <option value="monthly">Monthly</option>
+                <option value="biweekly">Biweekly</option>
+              </select>
+            </div>
             <button className={saving ? "btn-loading" : ""} disabled={saving} type="submit">
               {saving && <span className="btn-spinner" />}
               {saving ? "Saving..." : "Add Employee"}
@@ -119,16 +136,28 @@ export default function EmployeePage() {
           {(!Array.isArray(employees) || employees.length === 0) ? (
             <p>No employees added yet.</p>
           ) : (
-            <ul className="simple-list">
-              {employees.map((employee) => (
-                <li key={employee.id}>
-                  <span>{employee.fullName}</span>
-                  <span>{employee.department}</span>
-                  <span>{employee.payCycle}</span>
-                  <span>${employee.salary.toLocaleString()}</span>
-                </li>
-              ))}
-            </ul>
+            <table className="loan-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Department</th>
+                  <th>Cycle</th>
+                  <th>Salary</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees.map((employee) => (
+                  <tr key={employee.id}>
+                    <td>{employee.fullName}</td>
+                    <td>{employee.email}</td>
+                    <td>{employee.department}</td>
+                    <td>{employee.payCycle}</td>
+                    <td>${employee.salary.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </article>
       </section>
