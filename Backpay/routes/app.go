@@ -1,8 +1,7 @@
-package main
+package routes
 
 import (
   "fmt"
-  "os"
   "sync"
 )
 
@@ -42,7 +41,26 @@ type OrgSettings struct {
   PensionRate float64 `json:"pensionRate"`
 }
 
-type Store struct {
+type tenantStat struct {
+  OrgID          string  `json:"orgId"`
+  OrgName        string  `json:"orgName"`
+  Employees      int     `json:"employees"`
+  MonthlyPayroll float64 `json:"monthlyPayroll"`
+}
+
+type signupRequest struct {
+  Name     string `json:"name"`
+  Email    string `json:"email"`
+  Password string `json:"password"`
+  OrgName  string `json:"orgName"`
+}
+
+type loginRequest struct {
+  Email    string `json:"email"`
+  Password string `json:"password"`
+}
+
+type App struct {
   mu         sync.RWMutex
   users      map[string]User
   userByMail map[string]string
@@ -52,8 +70,8 @@ type Store struct {
   seq        int64
 }
 
-func NewStore() *Store {
-  s := &Store{
+func NewApp() *App {
+  app := &App{
     users:      make(map[string]User),
     userByMail: make(map[string]string),
     employees:  make(map[string][]Employee),
@@ -62,7 +80,6 @@ func NewStore() *Store {
     seq:        1,
   }
 
-  // Seed owner account for platform control.
   owner := User{
     ID:       "usr_1",
     Name:     "System Owner",
@@ -70,17 +87,15 @@ func NewStore() *Store {
     Password: "admin123",
     Role:     RoleSystemAdmin,
   }
-  s.users[owner.ID] = owner
-  s.userByMail[owner.Email] = owner.ID
-  s.seq = 2
+  app.users[owner.ID] = owner
+  app.userByMail[owner.Email] = owner.ID
+  app.seq = 2
 
-  return s
+  return app
 }
 
-func nextID(prefix string, n int64) string {
-  return fmt.Sprintf("%s_%d", prefix, n)
-}
-
-func databaseURL() string {
-  return os.Getenv("NEON_DATABASE_URL")
+func (a *App) nextID(prefix string) string {
+  id := fmt.Sprintf("%s_%d", prefix, a.seq)
+  a.seq++
+  return id
 }

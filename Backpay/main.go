@@ -1,2 +1,78 @@
-import "os"
 package main
+
+import (
+  "log"
+  "net/http"
+  "os"
+  "strings"
+
+  "backpay/routes"
+)
+
+func main() {
+  app := routes.NewApp()
+  mux := http.NewServeMux()
+  app.Register(mux)
+
+  log.Printf("Database URL configured: %t", databaseURL() != "")
+  log.Printf("CORS_ALLOWED_ORIGINS=%q", os.Getenv("CORS_ALLOWED_ORIGINS"))
+  log.Println("Backpay server listening on :8080")
+
+  if err := http.ListenAndServe(":8080", WithCORS(mux)); err != nil {
+    log.Fatal(err)
+  }
+}
+
+func WithCORS(next http.Handler) http.Handler {
+  allowedOrigins := parseAllowedOrigins(os.Getenv("CORS_ALLOWED_ORIGINS"))
+
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    origin := r.Header.Get("Origin")
+    if isAllowedOrigin(origin, allowedOrigins) {
+      w.Header().Set("Access-Control-Allow-Origin", origin)
+      w.Header().Set("Vary", "Origin")
+    }
+
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+    w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    if r.Method == http.MethodOptions {
+      w.WriteHeader(http.StatusNoContent)
+      return
+    }
+
+    next.ServeHTTP(w, r)
+  })
+}
+
+func parseAllowedOrigins(raw string) []string {
+  if strings.TrimSpace(raw) == "" {
+    return []string{"http://localhost:3000"}
+  }
+
+  parts := strings.Split(raw, ",")
+  origins := make([]string, 0, len(parts))
+  for _, part := range parts {
+    origin := strings.TrimSpace(part)
+    if origin != "" {
+      origins = append(origins, origin)
+    }
+  }
+
+  if len(origins) == 0 {
+    return []string{"http://localhost:3000"}
+  }
+
+  return origins
+}
+
+func isAllowedOrigin(origin string, allowed []string) bool {
+  if origin == "" {
+    return false
+  }
+  for _, allow := range allowed {
+    if allow == "*" || allow == origin {
+      return true
+    }
+  }
+  return false
+}
