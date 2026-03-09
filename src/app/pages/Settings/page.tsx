@@ -67,6 +67,7 @@ export default function SettingsPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"entity" | "payroll" | "deductions">("entity");
   const router = useRouter();
 
   const countryPreset = useMemo(() => COUNTRY_CONFIG[country], [country]);
@@ -115,7 +116,7 @@ export default function SettingsPage() {
     setSaving(true);
     try {
       await api.saveSettings({ orgId: session.orgId, ...settings });
-      setMessage("Payroll setup, entity, and statutory defaults saved.");
+      setMessage("Payroll setup saved successfully.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save settings");
     } finally {
@@ -129,88 +130,229 @@ export default function SettingsPage() {
     <main className="page-shell">
       <Navbar session={session} />
       <section className="content">
-        <h1>Payroll Setup</h1>
-        <p>Configure entity profile, country statutes, earnings and deductions for {session.orgName}.</p>
-
-        {message && <div className="success-text">{message}</div>}
-        {error && <div className="error-text">{error}</div>}
-
-        <article className="panel form-grid">
-          <h2>Entity Profile</h2>
-          <label htmlFor="entityName">Legal entity name</label>
-          <input id="entityName" onChange={(e) => setEntityName(e.target.value)} value={entityName} />
-          <label htmlFor="entityTax">Tax registration number</label>
-          <input id="entityTax" onChange={(e) => setEntityTaxId(e.target.value)} value={entityTaxId} />
-        </article>
-
-        <article className="panel form-grid">
-          <h2>Country and Statutory Rules</h2>
-          <label htmlFor="country">Country</label>
-          <select id="country" onChange={(e) => setCountry(e.target.value as CountryCode)} value={country}>
-            <option value="KE">Kenya</option>
-            <option value="UG">Uganda</option>
-            <option value="TZ">Tanzania</option>
-            <option value="RW">Rwanda</option>
-            <option value="US">United States</option>
-            <option value="GB">United Kingdom</option>
-          </select>
-          <label htmlFor="payCycle">Pay cycle</label>
-          <select
-            id="payCycle"
-            onChange={(e) => setSettings((prev) => ({ ...prev, payCycle: e.target.value as "monthly" | "biweekly" }))}
-            value={settings.payCycle}
-          >
-            <option value="monthly">Monthly</option>
-            <option value="biweekly">Biweekly</option>
-          </select>
-          <label htmlFor="currency">Currency</label>
-          <input id="currency" onChange={(e) => setSettings((prev) => ({ ...prev, currency: e.target.value.toUpperCase() }))} value={settings.currency} />
-          <label htmlFor="tax">Primary tax rate (%)</label>
-          <input id="tax" onChange={(e) => setSettings((prev) => ({ ...prev, taxRate: Number(e.target.value) }))} type="number" value={settings.taxRate} />
-          <label htmlFor="pension">Primary pension rate (%)</label>
-          <input id="pension" onChange={(e) => setSettings((prev) => ({ ...prev, pensionRate: Number(e.target.value) }))} type="number" value={settings.pensionRate} />
-        </article>
-
-        <div className="cards-grid">
-          <article className="panel">
-            <h2>Earnings</h2>
-            <ul className="simple-list">
-              {countryPreset.earnings.map((item) => (
-                <li key={`earning-${item.name}`}>
-                  <span>{item.name}</span>
-                  <span>{item.rate}%</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-          <article className="panel">
-            <h2>Deductions</h2>
-            <ul className="simple-list">
-              {countryPreset.deductions.map((item) => (
-                <li key={`deduction-${item.name}`}>
-                  <span>{item.name}</span>
-                  <span>{item.rate}%</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-          <article className="panel">
-            <h2>Statutories</h2>
-            <ul className="simple-list">
-              {countryPreset.statutory.map((item) => (
-                <li key={`statutory-${item.name}`}>
-                  <span>{item.name}</span>
-                  <span>{item.rate}%</span>
-                </li>
-              ))}
-            </ul>
-          </article>
+        <div className="page-header">
+          <h1>Payroll Setup</h1>
+          <p>Configure your organization profile, statutory deductions, and payroll settings for {session.orgName}.</p>
         </div>
 
-        <button className={saving ? "btn-loading" : ""} disabled={saving} onClick={onSave} type="button">
-          {saving && <span className="btn-spinner" />}
-          {saving ? "Saving..." : "Save Payroll Setup"}
-        </button>
+        {message && <div className="alert alert-success">{message}</div>}
+        {error && <div className="alert alert-error">{error}</div>}
+
+        {/* Tab Navigation */}
+        <div className="tabs">
+          <button
+            className={`tab ${activeTab === "entity" ? "active" : ""}`}
+            onClick={() => setActiveTab("entity")}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 21h18M5 21V7l8-4 8 4M9 21v-6h6v6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+            Entity Profile
+          </button>
+          <button
+            className={`tab ${activeTab === "payroll" ? "active" : ""}`}
+            onClick={() => setActiveTab("payroll")}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M12 7v5l3 3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            Payroll Settings
+          </button>
+          <button
+            className={`tab ${activeTab === "deductions" ? "active" : ""}`}
+            onClick={() => setActiveTab("deductions")}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 14l2 2 4-4M7 12l2-2 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+            Deductions & Statutories
+          </button>
+        </div>
+
+        {/* Entity Profile Tab */}
+        {activeTab === "entity" && (
+          <div className="panel panel-elevated">
+            <div className="panel-header">
+              <h2>Organization Details</h2>
+              <p>Legal entity information for compliance and reporting</p>
+            </div>
+            <div className="form-grid form-two-col">
+              <div className="form-group">
+                <label htmlFor="entityName">Legal Entity Name</label>
+                <input
+                  id="entityName"
+                  type="text"
+                  placeholder="e.g., Acme Logistics Ltd"
+                  onChange={(e) => setEntityName(e.target.value)}
+                  value={entityName}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="entityTax">Tax Registration Number</label>
+                <input
+                  id="entityTax"
+                  type="text"
+                  placeholder="e.g., PAYER-001"
+                  onChange={(e) => setEntityTaxId(e.target.value)}
+                  value={entityTaxId}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="country">Country / Region</label>
+                <select
+                  id="country"
+                  onChange={(e) => setCountry(e.target.value as CountryCode)}
+                  value={country}
+                >
+                  <option value="KE">Kenya</option>
+                  <option value="UG">Uganda</option>
+                  <option value="TZ">Tanzania</option>
+                  <option value="RW">Rwanda</option>
+                  <option value="US">United States</option>
+                  <option value="GB">United Kingdom</option>
+                </select>
+                <span className="form-hint">Statutory defaults auto-load based on selection</span>
+              </div>
+              <div className="form-group">
+                <label htmlFor="currency">Base Currency</label>
+                <input
+                  id="currency"
+                  type="text"
+                  onChange={(e) => setSettings((prev) => ({ ...prev, currency: e.target.value.toUpperCase() }))}
+                  value={settings.currency}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payroll Settings Tab */}
+        {activeTab === "payroll" && (
+          <div className="panel panel-elevated">
+            <div className="panel-header">
+              <h2>Payroll Configuration</h2>
+              <p>Payment cycles and default rates</p>
+            </div>
+            <div className="form-grid form-two-col">
+              <div className="form-group">
+                <label htmlFor="payCycle">Pay Cycle</label>
+                <select
+                  id="payCycle"
+                  onChange={(e) => setSettings((prev) => ({ ...prev, payCycle: e.target.value as "monthly" | "biweekly" }))}
+                  value={settings.payCycle}
+                >
+                  <option value="monthly">Monthly</option>
+                  <option value="biweekly">Biweekly</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="tax">Primary Income Tax Rate (%)</label>
+                <div className="input-with-suffix">
+                  <input
+                    id="tax"
+                    type="number"
+                    min="0"
+                    max="100"
+                    onChange={(e) => setSettings((prev) => ({ ...prev, taxRate: Number(e.target.value) }))}
+                    value={settings.taxRate}
+                  />
+                  <span className="input-suffix">%</span>
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="pension">Pension / Retirement Rate (%)</label>
+                <div className="input-with-suffix">
+                  <input
+                    id="pension"
+                    type="number"
+                    min="0"
+                    max="100"
+                    onChange={(e) => setSettings((prev) => ({ ...prev, pensionRate: Number(e.target.value) }))}
+                    value={settings.pensionRate}
+                  />
+                  <span className="input-suffix">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Deductions Tab */}
+        {activeTab === "deductions" && (
+          <>
+            <div className="cards-grid three-col">
+              <div className="card card-stat">
+                <div className="card-header">
+                  <span className="card-icon stat-icon">E</span>
+                  <h3>Earnings</h3>
+                </div>
+                <ul className="stat-list">
+                  {countryPreset.earnings.map((item) => (
+                    <li key={`earning-${item.name}`} className="stat-item">
+                      <span className="stat-name">{item.name}</span>
+                      <span className="stat-value">{item.rate}%</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="card card-stat">
+                <div className="card-header">
+                  <span className="card-icon deduct-icon">D</span>
+                  <h3>Deductions</h3>
+                </div>
+                <ul className="stat-list">
+                  {countryPreset.deductions.map((item) => (
+                    <li key={`deduction-${item.name}`} className="stat-item">
+                      <span className="stat-name">{item.name}</span>
+                      <span className="stat-value">{item.rate}%</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="card card-stat">
+                <div className="card-header">
+                  <span className="card-icon statutory-icon">S</span>
+                  <h3>Statutories</h3>
+                </div>
+                <ul className="stat-list">
+                  {countryPreset.statutory.map((item) => (
+                    <li key={`statutory-${item.name}`} className="stat-item">
+                      <span className="stat-name">{item.name}</span>
+                      <span className="stat-value">{item.rate}%</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="panel panel-info">
+              <div className="info-header">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M12 16v-4M12 8h.01" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <h4>Statutory Configuration</h4>
+              </div>
+              <p>These values are pre-configured based on your selected country ({country}). To customize statutory rates, contact support or update your country selection above.</p>
+            </div>
+          </>
+        )}
+
+        <div className="form-actions">
+          <button
+            className={`btn btn-primary ${saving ? "btn-loading" : ""}`}
+            disabled={saving}
+            onClick={onSave}
+            type="button"
+          >
+            {saving && <span className="btn-spinner" />}
+            {saving ? "Saving..." : "Save Payroll Setup"}
+          </button>
+        </div>
       </section>
     </main>
   );

@@ -27,6 +27,8 @@ export default function Navbar({ session }: NavbarProps) {
   const router = useRouter();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>(defaultNotifications);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchHref = session.role === "system_admin" ? "/system_admin/Analytics" : "/pages/Reports";
   const settingsHref = session.role === "system_admin" ? "/system_admin/Configuration" : "/pages/Settings";
 
@@ -34,17 +36,63 @@ export default function Navbar({ session }: NavbarProps) {
     setNotifications((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`${searchHref}?q=${encodeURIComponent(searchQuery)}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
+
   return (
     <>
       <Sidebar session={session} />
       <header className="navbar">
         <div className="top-right">
-          <Link aria-label="Search" className="top-icon-link" href={searchHref}>
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" fill="none" r="6.5" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M16 16l5 5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
-            </svg>
-          </Link>
+          {/* Search Section */}
+          <div className={`search-container ${isSearchOpen ? "open" : ""}`}>
+            <form onSubmit={handleSearch} className="search-form">
+              <input
+                type="text"
+                placeholder="Search employees, payruns..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+              <button type="submit" className="search-submit" aria-label="Search">
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" fill="none" r="6.5" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M16 16l5 5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+                </svg>
+              </button>
+            </form>
+            {!isSearchOpen && (
+              <button 
+                aria-label="Open search" 
+                className="top-icon-link search-toggle" 
+                onClick={() => setIsSearchOpen(true)} 
+                type="button"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" fill="none" r="6.5" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M16 16l5 5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+                </svg>
+              </button>
+            )}
+            {isSearchOpen && (
+              <button 
+                aria-label="Close search" 
+                className="top-icon-link search-close" 
+                onClick={() => {setIsSearchOpen(false); setSearchQuery("");}} 
+                type="button"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
+          </div>
 
           <Link aria-label="Settings" className="top-icon-link" href={settingsHref}>
             <svg aria-hidden="true" viewBox="0 0 24 24">

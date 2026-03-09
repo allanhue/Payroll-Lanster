@@ -90,7 +90,7 @@ export default function LoginPage() {
         </button>
 
         <p>
-          New tenant admin? <Link href="/auth/Signup">Create account</Link>
+          New admin? <Link href="/auth/Signup">Create account</Link>
         </p>
       </form>
     </main>

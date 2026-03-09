@@ -86,4 +86,7 @@ export const api = {
     request<SettingsPayload>("/api/settings", { method: "POST", body: JSON.stringify(body) }),
 
   getSettings: (orgId: string) => request<SettingsPayload>(`/api/settings?orgId=${encodeURIComponent(orgId)}`),
+
+  sendSupport: (body: { name: string; email: string; subject: string; message: string }) =>
+    request<{ sent: boolean; message: string }>("/api/support", { method: "POST", body: JSON.stringify(body) }),
 };
