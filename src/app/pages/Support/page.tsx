@@ -69,58 +69,100 @@ export default function SupportPage() {
               <p>Send us a message and we'll respond via email</p>
             </div>
             <form onSubmit={onSubmit} className="form-grid">
-              <div className="form-group">
-                <label htmlFor="name">Your Name</label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+              <div className="form-grid form-two-col">
+                <div className="form-group">
+                  <label htmlFor="name">Your Name *</label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    disabled={loading}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="email">Email Address *</label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                    placeholder="your.email@example.com"
+                  />
+                </div>
               </div>
+              
               <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="subject">Subject</label>
+                <label htmlFor="subject">Subject *</label>
                 <select
                   id="subject"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   required
+                  disabled={loading}
+                  className={subject ? "" : "placeholder-select"}
                 >
-                  <option value="">Select a topic</option>
+                  <option value="" disabled>Select a topic</option>
                   <option value="General Inquiry">General Inquiry</option>
                   <option value="Technical Support">Technical Support</option>
                   <option value="Payroll Issue">Payroll Issue</option>
+                  <option value="Account Problem">Account Problem</option>
                   <option value="Feature Request">Feature Request</option>
                   <option value="Billing Question">Billing Question</option>
+                  <option value="Bug Report">Bug Report</option>
                 </select>
               </div>
+              
               <div className="form-group">
-                <label htmlFor="message">Message</label>
+                <label htmlFor="message">Message *</label>
                 <textarea
                   id="message"
-                  rows={5}
+                  rows={6}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Describe your issue or question in detail..."
+                  placeholder="Please describe your issue or question in detail. Include any relevant information such as error messages, steps you've already tried, or specific features you need help with."
                   required
+                  disabled={loading}
+                  className="message-textarea"
                 />
+                <div className="form-hint">
+                  {message.length}/500 characters minimum
+                </div>
               </div>
+              
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    required
+                    disabled={loading}
+                  />
+                  <span className="checkbox-text">
+                    I understand that support responses will be sent to my email address
+                  </span>
+                </label>
+              </div>
+              
               <div className="form-actions">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setSubject("");
+                    setMessage("");
+                  }}
+                  disabled={loading}
+                >
+                  Clear Form
+                </button>
                 <button
                   type="submit"
                   className={`btn btn-primary ${loading ? "btn-loading" : ""}`}
-                  disabled={loading}
+                  disabled={loading || !name || !email || !subject || message.length < 50}
                 >
                   {loading && <span className="btn-spinner" />}
                   {loading ? "Sending..." : "Send Message"}

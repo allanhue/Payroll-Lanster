@@ -256,17 +256,35 @@ export default function PayrunPage() {
                   className="action-card" 
                   onClick={() => setActiveTab("create")}
                 >
-                  <span className="action-icon">💰</span>
+                  <span className="action-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style={{width: "2rem", height: "2rem"}}>
+                      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M12 8v8M8 12h8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </span>
                   <span className="action-title">Run New Payroll</span>
                   <span className="action-desc">Process monthly or biweekly payroll</span>
                 </button>
                 <button className="action-card" onClick={() => router.push("/pages/Payslips")}>
-                  <span className="action-icon">📄</span>
+                  <span className="action-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style={{width: "2rem", height: "2rem"}}>
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      <polyline points="14,2 14,8 20,8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" strokeWidth="1.5" />
+                      <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" strokeWidth="1.5" />
+                      <polyline points="10,9 9,9 8,9" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                  </span>
                   <span className="action-title">Generate Payslips</span>
                   <span className="action-desc">Bulk generate employee payslips</span>
                 </button>
                 <button className="action-card" onClick={() => router.push("/pages/Reports")}>
-                  <span className="action-icon">📊</span>
+                  <span className="action-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style={{width: "2rem", height: "2rem"}}>
+                      <path d="M3 3v18h18" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
                   <span className="action-title">View Reports</span>
                   <span className="action-desc">Payroll summary and analytics</span>
                 </button>

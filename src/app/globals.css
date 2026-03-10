@@ -1266,6 +1266,244 @@ button:hover {
   margin-bottom: 1rem;
 }
 
+/* Enhanced Search */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  background: #f3f7fc;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.search-form:focus-within {
+  border-color: var(--brand);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 124, 145, 0.1);
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  width: 200px;
+  transition: width 0.3s ease;
+}
+
+.search-container.open .search-input {
+  width: 300px;
+}
+
+.search-submit {
+  border: none;
+  background: transparent;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.search-submit:hover {
+  color: var(--brand);
+}
+
+.search-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.search-spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+.search-spinner circle {
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 31.416;
+  }
+  50% {
+    stroke-dashoffset: 15.708;
+  }
+  100% {
+    stroke-dashoffset: 31.416;
+  }
+}
+
+.search-toggle,
+.search-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(16, 46, 82, 0.12);
+  z-index: 100;
+  margin-top: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-results-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.search-results-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-result-item {
+  border-bottom: 1px solid #f0f3f7;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-result-link:hover {
+  background: #f8fbff;
+}
+
+.search-result-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.search-result-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.search-result-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.search-result-title {
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.search-result-type {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.search-results-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.view-all-results {
+  width: 100%;
+  padding: 0.5rem;
+  background: #f3f7fc;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--brand);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-all-results:hover {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+/* Enhanced Form Elements */
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  background: #f8f9fa;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.form-group textarea.message-textarea {
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.placeholder-select {
+  color: #999;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
+  margin: 0.25rem 0 0 0;
+  flex-shrink: 0;
+}
+
+.checkbox-text {
+  color: var(--text);
+}
+
 /* Link utility */
 .link {
   color: var(--brand);
